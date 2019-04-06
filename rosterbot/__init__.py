@@ -13,7 +13,7 @@ def create_roster():
 def addplayer():
     if request.form.get('token') != environ['SLACK_VERIFICATION_TOKEN']:
         abort(403)
-    return 'A '
+    return 'A player has been added'
 
 @app.route('/', methods = ['GET', 'POST'])
 def addevent():
