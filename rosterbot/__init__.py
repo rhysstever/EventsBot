@@ -7,4 +7,4 @@ app = Flask(__name__)
 def events():
     if request.form.get('token') != environ['SLACK_VERIFICATION_TOKEN']:
         abort(403)
-    return 'Here are all of the events happening today'
+    return 'Here are the events happening today'
