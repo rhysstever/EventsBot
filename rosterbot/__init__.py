@@ -8,13 +8,15 @@ def events():
     if request.form.get('token') != environ['SLACK_VERIFICATION_TOKEN']:
         abort(403)
 
-    if request.form.get('text').lower() == 'today':
+    text = str(request.form.get('text')).lower()
+
+    if text == 'today':
         return 'The events happening today'
 
-    if request.form.get('text').lower() == 'this week':
+    if text == 'this week':
         return 'The events happening this week'
 
-    if request.form.get('text').lower() == 'next week':
+    if text == 'next week':
         return 'The events happening next week'
 
     return 'bet'
