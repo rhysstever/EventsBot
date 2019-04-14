@@ -13,6 +13,9 @@ def events():
     if text == 'today':
         return 'The events happening today'
 
+    if text == 'tomorrow':
+        return 'The events happening tomorrow'
+
     if text == 'this week':
         return 'The events happening this week'
 
