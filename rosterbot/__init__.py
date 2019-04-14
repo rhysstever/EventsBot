@@ -8,4 +8,7 @@ def events():
     if request.form.get('token') != environ['SLACK_VERIFICATION_TOKEN']:
         abort(403)
 
-    return 'The events happening today'
+    if request.form.get('text') == 'today':
+        return 'The events happening today'
+
+    return 'bet'
