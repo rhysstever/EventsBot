@@ -7,40 +7,34 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import threading
 
 app = Flask(__name__)
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
 @app.route('/', methods = ['GET', 'POST'])
-def events():
+def eventbot():
     if request.form.get('token') != environ['SLACK_VERIFICATION_TOKEN']:
         abort(403)
-
-    # creds = None
-    # # The file token.pickle stores the user's access and refresh tokens, and is
-    # # created automatically when the authorization flow completes for the first
-    # # time.
-    # if os.path.exists('token.pickle'):
-    #     with open('token.pickle', 'rb') as token:
-    #         creds = pickle.load(token)
-    # # If there are no (valid) credentials available, let the user log in.
-    # if not creds or not creds.valid:
-    #     if creds and creds.expired and creds.refresh_token:
-    #         creds.refresh(Request())
-    #     else:
-    #         flow = InstalledAppFlow.from_client_secrets_file(
-    #             'credentials.json', SCOPES)
-    #         creds = flow.run_local_server()
-    #     # Save the credentials for the next run
-    #     with open('token.pickle', 'wb') as token:
-    #         pickle.dump(creds, token)
 
     service = build('calendar', 'v3')
 
     now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
 
     text = str(request.form.get('text')).lower()
-    events_result = service.events().list(calendarId='', timeMin=now, maxResults=1, singleEvents=True, orderBy='startTime').execute()
+
+    # If no parameter, the bot will display the next event
+    events_result = service.events().list(calendarId='',
+                                          timeMin=now, maxResults=1, singleEvents=True, orderBy='startTime').execute()
+    # if text == 'today':
+    #     events_result = service.events().list(calendarId='',
+    #                                           timeMin=now, singleEvents=True, orderBy='startTime').execute()
+    # if text == 'tomorrow':
+    #     events_result = service.events().list(calendarId='',
+    #                                           timeMin=now, singleEvents=True, orderBy='startTime').execute()
+    # if text == 'week':
+    #     events_result = service.events().list(calendarId='',
+    #                                           timeMin=now, singleEvents=True, orderBy='startTime').execute()
 
     events = events_result.get('items', [])
     event_string = ''
@@ -49,6 +43,8 @@ def events():
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
         event_string = str(start, event['summary'])
-
     return event_string
-
+# def main_thread(text, url):
+#     request_url = request.form.get('')
+#     thr = threading.Thread(target=eventbot, args=[])
+#     thr.start()
