@@ -47,5 +47,6 @@ def main():
         start = event['start'].get('dateTime', event['start'].get('date'))
         print(start, event['summary'])
 
+    print()
 if __name__ == '__main__':
     main()
